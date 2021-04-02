@@ -929,10 +929,17 @@ async function createCheck(linterName, sha, context, lintResult, summary) {
 		annotations = annotations.slice(0, 50);
 	}
 
+	let conclusion = "success";
+	if (!lintResult.isSuccess) {
+		conclusion = "failure";
+	} else if (annotations.length > 0) {
+		conclusion = "neutral";
+	}
+
 	const body = {
 		name: linterName,
 		head_sha: sha,
-		conclusion: lintResult.isSuccess ? "success" : "failure",
+		conclusion: conclusion,
 		output: {
 			title: capitalizeFirstLetter(summary),
 			summary: `${linterName} found ${summary}`,
