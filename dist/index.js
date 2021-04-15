@@ -1120,6 +1120,7 @@ async function runAction() {
 	const gitEmail = core.getInput("git_email", { required: true });
 	const commitMessage = core.getInput("commit_message", { required: true });
 	const checkName = core.getInput("check_name", { required: true });
+	const skipCheckout = core.getInput("skip_checkout") === "true";
 	const isPullRequest =
 		context.eventName === "pull_request" || context.eventName === "pull_request_target";
 
@@ -1139,7 +1140,7 @@ async function runAction() {
 		// Set Git committer username and password
 		git.setUserInfo(gitName, gitEmail);
 	}
-	if (isPullRequest) {
+	if (isPullRequest && !skipCheckout) {
 		// Fetch and check out PR branch:
 		// - "push" event: Already on correct branch
 		// - "pull_request" event on origin, for code on origin: The Checkout Action
